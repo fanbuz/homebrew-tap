@@ -18,6 +18,9 @@ class SyncFormulaWorkflowTest(unittest.TestCase):
         self.assertIn("FormulaSpec/${FORMULA_NAME}.json", workflow)
         self.assertIn("scripts/render_formula.py", workflow)
         self.assertIn("git -C . push origin HEAD:main", workflow)
+        self.assertIn("formula_name", workflow)
+        self.assertIn("source_repository", workflow)
+        self.assertIn("tag", workflow)
 
 
 if __name__ == "__main__":

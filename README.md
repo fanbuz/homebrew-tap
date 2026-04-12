@@ -40,6 +40,7 @@ GitHub Actions workflows live under `.github/workflows/`.
 The tap can update formulae automatically after a source repository publishes a release.
 For `gitea-cli`, the source repository dispatches a `sync-homebrew-formula` event to this tap,
 and this repository then fetches the release metadata, renders `Formula/gitea-cli.rb`, and pushes the update itself.
+`codex-threads` follows the same pattern through the shared `sync-formula.yml` workflow and `FormulaSpec/codex-threads.json`.
 
 You can also rerun a formula sync manually from GitHub Actions via the `Sync Formula` workflow.
 
@@ -50,6 +51,7 @@ Formula/
   codex-threads.rb
   gitea-cli.rb
 FormulaSpec/
+  codex-threads.json
   gitea-cli.json
 .github/workflows/
   sync-formula.yml

@@ -1,0 +1,14 @@
+{
+  "formula_class": "CodexThreads",
+  "binary_name": "codex-threads",
+  "description": "Index, search, and read local Codex session history",
+  "homepage": "https://github.com/fanbuz/codex-threads",
+  "repository": "fanbuz/codex-threads",
+  "license": "MIT",
+  "head_branch": "main",
+  "asset_names": {
+    "macos_arm64": "codex-threads-macos-arm64.tar.gz",
+    "macos_amd64": "codex-threads-macos-x64.tar.gz",
+    "linux_x64": "codex-threads-linux-x64.tar.gz"
+  }
+}
