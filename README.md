@@ -13,6 +13,9 @@ brew tap fanbuz/tap
 brew install fanbuz/tap/gitea-cli
 ```
 
+On supported platforms, Homebrew installs a prebuilt binary from GitHub Releases.
+When no matching prebuilt archive is available yet, the formula falls back to a source build.
+
 ## Upgrade
 
 ```bash
