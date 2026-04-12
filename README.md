@@ -20,7 +20,7 @@ When no matching prebuilt archive is available yet, the formula falls back to a 
 
 Current prebuilt coverage:
 
-- `gitea-cli`: see the project release assets for supported targets
+- `gitea-cli`: macOS arm64, macOS amd64, Linux x64
 - `codex-threads`: macOS arm64, Linux x64
 
 ## Upgrade
