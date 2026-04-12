@@ -76,8 +76,8 @@ jobs:
         env:
           TAG_NAME: ${{ env.TAG_NAME }}
         run: |
-          git config user.name "fanbuz"
-          git config user.email "pfancoder@gmail.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if git -C . diff --quiet -- "Formula/${FORMULA_NAME}.rb"; then
             echo "Formula already up to date."
             exit 0
