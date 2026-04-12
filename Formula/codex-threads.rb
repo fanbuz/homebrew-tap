@@ -1,22 +1,22 @@
 class CodexThreads < Formula
   desc "Index, search, and read local Codex session history"
   homepage "https://github.com/fanbuz/codex-threads"
-  version "0.0.4"
+  version "0.0.1"
   license "MIT"
   head "https://github.com/fanbuz/codex-threads.git", branch: "main"
 
   if OS.mac? && Hardware::CPU.arm?
     url "https://github.com/fanbuz/codex-threads/releases/download/v#{version}/codex-threads-macos-arm64.tar.gz"
-    sha256 "488c6ad710550833e21ba685766662fbc90be41cd857f739c249e1203deef1df"
+    sha256 "8f70747d0dd602705336817ba448114b6c1064bca034d02431a40e48c90145b5"
   elsif OS.mac? && Hardware::CPU.intel?
     url "https://github.com/fanbuz/codex-threads/releases/download/v#{version}/codex-threads-macos-x64.tar.gz"
-    sha256 "663b60e6ac08b851b87cf7b1df5bcbc7f224d8c8e0cb33d3c88286858d66f816"
+    sha256 "7157a8c2a5eec8aec987d0707501e36f5f19e37d8b53d4cbf34f2ec3c9a83976"
   elsif OS.linux? && Hardware::CPU.intel?
     url "https://github.com/fanbuz/codex-threads/releases/download/v#{version}/codex-threads-linux-x64.tar.gz"
-    sha256 "06ac29cd7b99520a491d4a6a767082413973a07ca9c4d0752928e4031f39a23f"
+    sha256 "aeb10ccae688a695c7e1f386df0221dc2d847a53f25b5608817102d8015082a1"
   else
     url "https://github.com/fanbuz/codex-threads/archive/refs/tags/v#{version}.tar.gz"
-    sha256 "894c13f0457e43c653b24c3917080faca206411bb988ea5b30466fb561ed36b8"
+    sha256 "33b25bd3dd26f1cad0d9ad421fa156b99c9b5fd5d7b6b53b7d9a341ed254feb4"
 
     depends_on "rust" => :build
   end
