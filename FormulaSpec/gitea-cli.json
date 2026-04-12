@@ -1,0 +1,14 @@
+{
+  "formula_class": "GiteaCli",
+  "binary_name": "gitea-cli",
+  "description": "CLI wrapper around a configured Gitea MCP server",
+  "homepage": "https://github.com/fanbuz/gitea-cli",
+  "repository": "fanbuz/gitea-cli",
+  "license": "MIT",
+  "head_branch": "main",
+  "asset_names": {
+    "macos_arm64": "gitea-cli-macos-arm64.tar.gz",
+    "macos_amd64": "gitea-cli-macos-amd64.tar.gz",
+    "linux_x64": "gitea-cli-linux-x64.tar.gz"
+  }
+}

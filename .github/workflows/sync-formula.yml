@@ -1,0 +1,88 @@
+name: Sync Formula
+
+on:
+  repository_dispatch:
+    types:
+      - sync-homebrew-formula
+  workflow_dispatch:
+    inputs:
+      source_repository:
+        description: Source GitHub repository, for example fanbuz/gitea-cli
+        required: true
+        type: string
+      tag:
+        description: Release tag, for example v0.0.6
+        required: true
+        type: string
+      formula_name:
+        description: Formula file name without .rb suffix
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tap repository
+        uses: actions/checkout@v4
+
+      - name: Resolve sync request
+        shell: bash
+        run: |
+          python3 - "$GITHUB_EVENT_PATH" <<'PY' >> "$GITHUB_ENV"
+          import json
+          import sys
+
+          event = json.load(open(sys.argv[1], encoding="utf-8"))
+          payload = event.get("client_payload") or {}
+          inputs = event.get("inputs") or {}
+
+          def get_value(name: str) -> str:
+              value = payload.get(name) or inputs.get(name) or ""
+              if not value:
+                  raise SystemExit(f"missing workflow value: {name}")
+              return value
+
+          print(f"SOURCE_REPOSITORY={get_value('source_repository')}")
+          print(f"TAG_NAME={get_value('tag')}")
+          print(f"FORMULA_NAME={get_value('formula_name')}")
+          PY
+
+      - name: Fetch release metadata
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$TAG_NAME" --repo "$SOURCE_REPOSITORY" --json tagName,assets > release.json
+          curl -fsSL -o source.tar.gz "https://github.com/${SOURCE_REPOSITORY}/archive/refs/tags/${TAG_NAME}.tar.gz"
+          shasum -a 256 source.tar.gz | awk '{print $1}' > source.sha256
+
+      - name: Render formula
+        shell: bash
+        run: |
+          python3 scripts/render_formula.py \
+            --config "FormulaSpec/${FORMULA_NAME}.json" \
+            --release-json release.json \
+            --source-sha256 "$(cat source.sha256)" \
+            --output "Formula/${FORMULA_NAME}.rb"
+          ruby -c "Formula/${FORMULA_NAME}.rb"
+
+      - name: Commit and push formula update
+        shell: bash
+        env:
+          TAG_NAME: ${{ env.TAG_NAME }}
+        run: |
+          git config user.name "fanbuz"
+          git config user.email "pfancoder@gmail.com"
+          if git -C . diff --quiet -- "Formula/${FORMULA_NAME}.rb"; then
+            echo "Formula already up to date."
+            exit 0
+          fi
+
+          git add "Formula/${FORMULA_NAME}.rb"
+          git commit -m "${FORMULA_NAME}: release ${TAG_NAME#v}"
+          git -C . push origin HEAD:main
