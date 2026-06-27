@@ -1,22 +1,22 @@
 class GiteaCli < Formula
   desc "CLI wrapper around a configured Gitea MCP server"
   homepage "https://github.com/fanbuz/gitea-cli"
-  version "0.0.9"
+  version "0.0.10"
   license "MIT"
   head "https://github.com/fanbuz/gitea-cli.git", branch: "main"
 
   if OS.mac? && Hardware::CPU.arm?
     url "https://github.com/fanbuz/gitea-cli/releases/download/v#{version}/gitea-cli-macos-arm64.tar.gz"
-    sha256 "1e61c60f23ab5b79cb3ae0801a339f09f96c7e20eed34c16da7991de0b05ebcc"
+    sha256 "002a1a7ccbfc8dc05217da7a8fb651606369da59ed30a9aa63e110cace914cd8"
   elsif OS.mac? && Hardware::CPU.intel?
     url "https://github.com/fanbuz/gitea-cli/releases/download/v#{version}/gitea-cli-macos-amd64.tar.gz"
-    sha256 "7dfac67e24c7d5710ea4bb21c1a4bd2cc57357adead321c1bff0d0813b1a7e23"
+    sha256 "9e3af20300085682a268bd152cc802f44fa8384a97751a21b22f25eb74a7128a"
   elsif OS.linux? && Hardware::CPU.intel?
     url "https://github.com/fanbuz/gitea-cli/releases/download/v#{version}/gitea-cli-linux-x64.tar.gz"
-    sha256 "32869c4d3b1d9bd127013bc268254060903df14e1859709d223894955b0bec02"
+    sha256 "5e2e790fa62e6efd0b389c748ed2fc00cb87d173828884e564753ddb72cd0551"
   else
     url "https://github.com/fanbuz/gitea-cli/archive/refs/tags/v#{version}.tar.gz"
-    sha256 "81b44e51f22c20060934edc7bcb8de1c1348c97f27f1cef313a87ec4acd3f6f6"
+    sha256 "b78b349621bbce6c306feb032092ba6bb7a0e1354b12625d1a3004e21ddd1eb1"
 
     depends_on "rust" => :build
   end
