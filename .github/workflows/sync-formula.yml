@@ -8,17 +8,22 @@ on:
       - sync-homebrew-formula
   workflow_dispatch:
     inputs:
+      sync_all:
+        description: Sync every formula from its source repository's latest release
+        required: false
+        default: false
+        type: boolean
       source_repository:
-        description: Source GitHub repository, for example fanbuz/gitea-cli
-        required: true
+        description: Source GitHub repository, required unless syncing all formulae
+        required: false
         type: string
       tag:
-        description: Release tag, for example v0.0.6
-        required: true
+        description: Release tag, required unless syncing all formulae
+        required: false
         type: string
       formula_name:
-        description: Formula file name without .rb suffix
-        required: true
+        description: Formula file name without .rb suffix, required unless syncing all formulae
+        required: false
         type: string
 
 permissions:
@@ -30,7 +35,7 @@ concurrency:
 
 jobs:
   sync:
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && inputs.sync_all != true
     runs-on: ubuntu-latest
 
     steps:
@@ -95,7 +100,7 @@ jobs:
           git -C . push origin HEAD:main
 
   sync-latest-releases:
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || inputs.sync_all == true
     runs-on: ubuntu-latest
 
     steps:

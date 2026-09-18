@@ -41,8 +41,9 @@ The tap checks the latest stable GitHub release for every entry in `FormulaSpec/
 It renders any changed formulae and pushes them itself, so source repositories do not need a
 long-lived cross-repository token. `gitea-cli` and `codex-threads` both use this flow.
 
-For an immediate update, you can manually run the `Sync Formula` workflow in GitHub Actions.
-It also continues to accept the legacy `sync-homebrew-formula` repository-dispatch event.
+For an immediate reconciliation, manually run the `Sync Formula` workflow in GitHub Actions with
+`sync_all` selected. You can also use its source-repository, tag, and formula-name inputs to update
+one release. It continues to accept the legacy `sync-homebrew-formula` repository-dispatch event.
 
 ## Adding a New Project
 

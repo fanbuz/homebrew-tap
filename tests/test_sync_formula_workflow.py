@@ -14,6 +14,7 @@ class SyncFormulaWorkflowTest(unittest.TestCase):
         self.assertIn("repository_dispatch", workflow)
         self.assertIn("sync-homebrew-formula", workflow)
         self.assertIn("workflow_dispatch", workflow)
+        self.assertIn("sync_all", workflow)
         self.assertIn("schedule", workflow)
         self.assertIn('cron: "17 * * * *"', workflow)
         self.assertIn("gh release view", workflow)
