@@ -1,6 +1,8 @@
 name: Sync Formula
 
 on:
+  schedule:
+    - cron: "17 * * * *"
   repository_dispatch:
     types:
       - sync-homebrew-formula
@@ -22,8 +24,13 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: formula-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
 
     steps:
@@ -85,4 +92,58 @@ jobs:
 
           git add "Formula/${FORMULA_NAME}.rb"
           git commit -m "${FORMULA_NAME}: release ${TAG_NAME#v}"
+          git -C . push origin HEAD:main
+
+  sync-latest-releases:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tap repository
+        uses: actions/checkout@v4
+
+      - name: Render formulae from latest releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          for config in FormulaSpec/*.json; do
+            formula_name="$(basename "${config}" .json)"
+            source_repository="$(python3 - "${config}" <<'PY'
+          import json
+          import sys
+
+          with open(sys.argv[1], encoding="utf-8") as config_file:
+              print(json.load(config_file)["repository"])
+          PY
+          )"
+            tag_name="$(gh release view --repo "${source_repository}" --json tagName --jq .tagName)"
+            release_json="release-${formula_name}.json"
+            source_tarball="source-${formula_name}.tar.gz"
+
+            gh release view "${tag_name}" --repo "${source_repository}" --json tagName,assets > "${release_json}"
+            curl -fsSL -o "${source_tarball}" "https://github.com/${source_repository}/archive/refs/tags/${tag_name}.tar.gz"
+
+            python3 scripts/render_formula.py \
+              --config "${config}" \
+              --release-json "${release_json}" \
+              --source-sha256 "$(shasum -a 256 "${source_tarball}" | awk '{print $1}')" \
+              --output "Formula/${formula_name}.rb"
+            ruby -c "Formula/${formula_name}.rb"
+          done
+
+      - name: Commit and push formula updates
+        shell: bash
+        run: |
+          if git -C . diff --quiet -- Formula; then
+            echo "Formulae already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula
+          git commit -m "formulae: sync latest releases"
           git -C . push origin HEAD:main
